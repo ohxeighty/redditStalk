@@ -1,7 +1,10 @@
 # redditStalk
 Generates a listing of subreddits associated with a user, submission or subreddit
 
-Depends on matplotlib and WordCloud (https://github.com/amueller/word_cloud)
+## Dependencies
+PRAW (http://praw.readthedocs.io/en/latest/)
+Optionally depends on matplotlib and WordCloud (https://github.com/amueller/word_cloud) for the wordcloud.
+
 ## Usage
 usage: redditstalk.py [-h]
                       [-t {confidence,top,new,controversial,old,random,qa,live,blank}]
