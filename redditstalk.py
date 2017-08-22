@@ -19,7 +19,7 @@ def display_wordcloud(string):
       info("Creating wordcloud") 
       from wordcloud import WordCloud
       import matplotlib.pyplot as plt 
-      wordcloud = WordCloud(width=3200, height=1600).generate(string)
+      wordcloud = WordCloud(width=3200, height=1600, collocations=False).generate(string)
       # Run as administrator buddy-o-pal
       plt.imshow(wordcloud, interpolation='bilinear')
       plt.axis("off")
@@ -28,9 +28,10 @@ def display_wordcloud(string):
       error("Could not create wordcloud, check if you have matplotlib and wordcloud")
   
 subreddit_type = ["controversial", "gilded", "hot", "new", "rising", "top"]   
-subreddit_type = ["confidence", "top", "new", "controversial", "old", "random", "qa", "live", "blank"]
-parser = argparse.ArgumentParser(description="Stalk people and view their visited subreddits")
+time_filter = ["all", "hour", "day", "month", "week", "year"]
+parser = argparse.ArgumentParser(description="Stalk people and view their commented on subreddits")
 parser.add_argument('-t', '--tab', help="grab users from which tab", required = False, default = "hot", choices=subreddit_type)
+parser.add_argument('-T', '--time', help="time period to filter with", required = False, default = "all", choices=time_filter)
 parser.add_argument('-l', '--limit', type=int, help="submission limit", required = False, default = 10)
 parser.add_argument('-cl', '--comment_limit', type=int, help="comment limit when parsing user history", required = False, default = 10)
 parser.add_argument('-sl', '--scrape_limit', type=int, help="scrape limit when getting comments from submission", required = False, default = 10)
@@ -66,17 +67,17 @@ if args.subreddit:
    # gib switch pls 
    info("Getting Submissions")
    if args.tab == "hot":
-      submissions = [x for x in subreddit.hot(limit=args.limit)]
+      submissions = [x for x in subreddit.hot(limit=args.limit, time_filter=args.time)]
    elif args.tab == "controversial":
-      submissions = [x for x in subreddit.controversial(limit=args.limit)]
+      submissions = [x for x in subreddit.controversial(limit=args.limit, time_filter=args.time)]
    elif args.tab == "gilded":
-      submissions = [x for x in subreddit.gilded(limit=args.limit)]
+      submissions = [x for x in subreddit.gilded(limit=args.limit, time_filter=args.time)]
    elif args.tab == "new":
-      submissions = [x for x in subreddit.new(limit=args.limit)]
+      submissions = [x for x in subreddit.new(limit=args.limit, time_filter=args.time)]
    elif args.tab == "rising":
-      submissions = [x for x in subreddit.rising(limit=args.limit)]
+      submissions = [x for x in subreddit.rising(limit=args.limit, time_filter=args.time)]
    elif args.tab == "top":
-      submissions = [x for x in subreddit.top(limit=args.limit)]
+      submissions = [x for x in subreddit.top(limit=args.limit, time_filter=args.time)]
    
    info("Iterating over submissions")
    
@@ -136,6 +137,7 @@ if args.subreddit:
    
    # Print and finish
    success("||||| Finished - Displaying Results |||||")
+   print("Number of Redditors analyzed: " + str(len(redditor_list)))
    count = collections.Counter(subreddits)
    total = sum([i for i in count.values()]) * 1.0
    for i,v in count.most_common():
@@ -160,7 +162,7 @@ elif args.user:
       comments = redditor.comments.new(limit=args.comment_limit)
    except:
       error("Error reading redditor profile, possibly private")
-   
+      
    for comment in comments:
       try:
          subreddits.append(comment.subreddit.display_name)
@@ -179,9 +181,9 @@ elif args.user:
       print("Subreddit Frequency: " + str(v)).encode('utf-8')
       print("Subreddit Percentage: " + str( round((v / total)*100, 2)) + "\n").encode('utf-8')
    
-   
    if args.wordcloud:
       display_wordcloud(' '.join(subreddits))
+      
 # Grab comments from page automatically
 elif args.id:
    redditor_list = [] 
@@ -239,12 +241,14 @@ elif args.id:
       
    # Print and finish
    success("||||| Finished - Displaying Results |||||")
+   print("Number of Redditors analyzed: " + str(len(redditor_list)))
    count = collections.Counter(subreddits)
    total = sum([i for i in count.values()]) * 1.0
    for i,v in count.most_common():
       print("Subreddit Name: " + i).encode('utf-8')
       print("Subreddit Frequency: " + str(v)).encode('utf-8')
       print("Subreddit Percentage: " + str( round((v / total)*100, 2)) + "\n").encode('utf-8')
+   
    
    
    if args.wordcloud:
