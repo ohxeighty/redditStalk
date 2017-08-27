@@ -49,8 +49,8 @@ verbosity.add_argument('-v', '--verbose', help="adds verbosity (many prints may 
 
 args = parser.parse_args()
 # read only, add parameters username and password for write
-reddit = praw.Reddit(client_id="ID_HERE",
-                     client_secret="SECRET_HERE",
+reddit = praw.Reddit(client_id="YOUR_ID_HERE",
+                     client_secret="YOUR_SECRET_HERE",
                      user_agent="redditstalk"
                      ) 
          
