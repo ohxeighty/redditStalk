@@ -49,8 +49,8 @@ verbosity.add_argument('-v', '--verbose', help="adds verbosity (many prints may 
 
 args = parser.parse_args()
 # read only, add parameters username and password for write
-reddit = praw.Reddit(client_id="YOUR_ID_HERE",
-                     client_secret="YOUR_SECRET_HERE",
+reddit = praw.Reddit(client_id="REPLACE",
+                     client_secret="REPLACE",
                      user_agent="redditstalk"
                      ) 
          
@@ -73,7 +73,7 @@ if args.subreddit:
    elif args.tab == "gilded":
       submissions = [x for x in subreddit.gilded(limit=args.limit, time_filter=args.time)]
    elif args.tab == "new":
-      submissions = [x for x in subreddit.new(limit=args.limit, time_filter=args.time)]
+      submissions = [x for x in subreddit.new(limit=args.limit)]
    elif args.tab == "rising":
       submissions = [x for x in subreddit.rising(limit=args.limit, time_filter=args.time)]
    elif args.tab == "top":
